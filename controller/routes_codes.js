@@ -166,3 +166,43 @@ module.exports.deleteExpense = async (req,res,next)=>{
         next(err)
     }
 }
+
+module.exports.lastSevenDays=async(req,res,next)=>{
+    try{
+        const findUser=await User.findOne({email:req.user.email})
+        let sevenDaysAgo = new Date()
+    
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate()-7)
+        // let expense=findUser.expenses.find(u=>u.cause==='doodh')
+        let expenses=[]
+        findUser.expenses.forEach((el)=>{
+            if (el.date>=sevenDaysAgo){
+                expenses.push(el)
+            }
+        })
+        console.log(expenses)
+        res.status(200).send({message:`Hey ${findUser.name} this is your last Seven days spendings`,expense:expenses})
+    }catch(err){
+        next(err)
+    }
+}
+
+module.exports.OneMonth=async(req,res,next)=>{
+    try{
+        const findUser=await User.findOne({email:req.user.email})
+        let Onemonthago = new Date()
+    
+        Onemonthago.setMonth(Onemonthago.getMonth()-1)
+        console.log(Onemonthago)
+        // let expense=findUser.expenses.find(u=>u.cause==='doodh')
+        let expenses=[]
+        findUser.expenses.forEach((el)=>{
+            if (el.date>=Onemonthago){
+                expenses.push(el)
+            }
+        })
+        res.status(200).send({message:`Hey ${findUser.name} this is your last One month spendings`,expense:expenses})
+    }catch(err){
+        next(err)
+    }
+}

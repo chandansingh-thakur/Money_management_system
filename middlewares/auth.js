@@ -17,7 +17,7 @@ module.exports.auth = async (req,res,next)=>{
         }
         const ismatching = await bcrypt.compare(password,user.password)
         if (!ismatching){
-            return res.status(400).send("Wrong password enter again! ")
+            return res.status(400).send("Wrong password enter agin! ")
         }
         const token = jwt.sign({id:user._id,name:user.name,email:user.email,role:user.role},process.env.JWT,{expiresIn:"2h"})
         req.token = token

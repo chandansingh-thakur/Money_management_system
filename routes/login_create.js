@@ -1,6 +1,14 @@
 const express = require('express')
 const router = express.Router()
-const {create_account,allUsers,login,addexpense,updateExpense,updateaccount,addmoney,wholeexpense,deleteExpense}=require('../controller/routes_codes')
+const {create_account,
+    allUsers,login,
+    addexpense,
+    updateExpense,
+    updateaccount,
+    addmoney,
+    wholeexpense,
+    deleteExpense,
+    lastSevenDays,OneMonth}=require('../controller/routes_codes')
 const {auth,autherize}=require('../middlewares/auth')
 
 router.post('/create_account',create_account)
@@ -15,5 +23,7 @@ router.post('/addmoney',addmoney)
 router.post('/deleteexpense',deleteExpense)
 
 router.get('/wholeExpenses',wholeexpense)
+router.get('/lastsevendays',lastSevenDays)
+router.get('/lastonemonth',OneMonth)
 
 module.exports = router
