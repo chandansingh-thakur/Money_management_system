@@ -32,6 +32,15 @@ const UserSchema = new mongoose.Schema({
             date: {
                 type: Date,
                 default: Date.now
+            },
+            category:{
+                type:String,
+                default:"others",
+                enum: ['healthfood', 'clothes', 'college', 'books', 'food','travel','health','entertainment','bills','others']
+            },
+            description:{
+                type:String,
+                default:"Not known"
             }
         }],
     role:{
