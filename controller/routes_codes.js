@@ -28,7 +28,7 @@ module.exports.create_account=async (req,res,next)=>{
 //getting all the users
 module.exports.allUsers=async (req,res,next)=>{
     try{
-        const users = await User.find()
+        const users = await User.find().select('-password')
         res.send(users)
     }catch(err){
         next(err)
@@ -44,7 +44,7 @@ module.exports.login=async (req,res,next)=>{
 //adding expenses updating totalsaving and pushing the expense in expenses
 module.exports.addexpense=async (req,res,next)=>{
     try{
-        const {amount,cause,date} = req.body
+        const {amount,cause,date,description,category} = req.body
         if (!amount){
             return res.status(400).send("Enter amount cause ")
         }
@@ -53,7 +53,12 @@ module.exports.addexpense=async (req,res,next)=>{
             return res.status(409).send(`Your totalsaving is ${findUser.totalsaving} Add more money in savings.`)
         }
         findUser.totalsaving-=amount
-        findUser.expenses.push({amount:amount,cause:cause||"Not known",date:date||Date.now()})
+        //the category will be 
+        if (!category){
+            category="others"
+        }
+        findUser.expenses.push({amount:amount,cause:cause||"Not known",date:date||Date.now(),
+            description:description||"Not known",category:category.toLowerCase()})
         await findUser.save()
         res.send({message:`Hey ${findUser.name} your expense is saved `,expense:findUser.expenses.at(-1)})
         }catch(err){
@@ -67,7 +72,6 @@ module.exports.addexpense=async (req,res,next)=>{
 module.exports.updateExpense =async (req,res,next)=>{
     try{
         const {id,amount,cause} = req.body
-        console.log(amount,cause)
         if (!amount||!id){
             return res.status(400).send("Enter amount id cause.")
         }
@@ -76,7 +80,7 @@ module.exports.updateExpense =async (req,res,next)=>{
         if (!expense){
             return res.status(404).send(`Expense with id ${id} not found`)
         }
-        if (amount>(totalsaving+expense.amount)){
+        if (amount>(findUser.totalsaving+expense.amount)){
             return res.status(400).send(`Your totalsaving will be only ${totalsaving+expense.amount}`)
         }
         findUser.totalsaving+=expense.amount
